@@ -1,0 +1,2 @@
+# txteditr
+a basic texteditor
