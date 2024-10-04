@@ -13,16 +13,22 @@ class ThemeManager:
                 "button": "#F0F0F0",
                 "button_text": "#000000",
                 "highlight": "#0078D7",
-                "highlight_text": "#FFFFFF"
+                "highlight_text": "#FFFFFF",
+                "navbar": "#F0F0F0",  # Navbar background for light theme
+                "navbar_text": "#000000",  # Navbar text for light theme
+                "navbar_hover": "#D0D0D0",  # Navbar hover background for light theme
             },
             "dark": {
                 "window": "#1E1E1E",
-                "text": "#FFFFFF",  # Ensures all text is white in dark mode
+                "text": "#FFFFFF",
                 "base": "#2D2D2D",
                 "button": "#333333",
-                "button_text": "#FFFFFF",  # Button text in white for dark mode
+                "button_text": "#FFFFFF",
                 "highlight": "#0078D7",
-                "highlight_text": "#FFFFFF"  # Highlighted text in white
+                "highlight_text": "#FFFFFF",
+                "navbar": "#333333",  # Navbar background for dark theme
+                "navbar_text": "#FFFFFF",  # Navbar text for dark theme
+                "navbar_hover": "#555555",  # Navbar hover background for dark theme
             }
         }
         self.current_theme = "light"
@@ -52,24 +58,32 @@ class ThemeManager:
                 brush = QBrush(self.background_image)
                 palette.setBrush(QPalette.Window, brush)
 
+            # Apply the palette to the entire application
             self.parent.setPalette(palette)
 
-    def customize_theme(self):
-        theme = self.themes[self.current_theme].copy()
-        color_dialog = QColorDialog(self.parent)
+            # Update MenuBar, EditTree, and other widgets to ensure correct text and background color
+            self.update_widget_styles(theme)
 
-        # Customize each color in the theme
-        for key in theme:
-            color = color_dialog.getColor(QColor(theme[key]), self.parent, f"Choose {key} color")
-            if color.isValid():
-                theme[key] = color.name()
+    def update_widget_styles(self, theme):
+        """Update additional widget styles that are not covered by the QPalette."""
 
-        self.themes["custom"] = theme
-        self.apply_theme("custom")
+        # Update MenuBar colors
+        self.parent.menu_bar.setStyleSheet(
+            f"background-color: {theme['navbar']}; color: {theme['navbar_text']};"
+            f" QMenuBar::item {{ padding: 5px; }} "  # Add some padding for menu items
+            f" QMenuBar::item:hover {{ background-color: {theme['navbar_hover']}; color: {theme['navbar_text']}; }}"
+        )
 
-    def set_background_image(self):
-        file_name, _ = QFileDialog.getOpenFileName(self.parent, "Choose Background Image", "",
-                                                   "Image Files (*.png *.jpg *.bmp)")
-        if file_name:
-            self.background_image = QPixmap(file_name)
-            self.apply_theme(self.current_theme)
+        # Update toolbar colors (FontBox and SizeBox)
+        self.parent.text_editor.fontBox.setStyleSheet(
+            f"background-color: {theme['button']}; color: {theme['button_text']};"
+        )
+        self.parent.text_editor.sizeBox.setStyleSheet(
+            f"background-color: {theme['button']}; color: {theme['button_text']};"
+        )
+
+        # Update EditTree colors
+        self.parent.edit_tree.setStyleSheet(
+            f"background-color: {theme['base']}; color: {theme['text']};"
+        )
+

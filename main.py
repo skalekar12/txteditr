@@ -1,7 +1,7 @@
 # main.py
 
 import sys
-from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QMessageBox
+from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QMessageBox
 from editor import TextEditor
 from tree import EditTree
 from menu import MenuBar
@@ -34,6 +34,11 @@ class MainWindow(QMainWindow):
         # Add editor layout to main layout
         main_layout.addLayout(editor_layout)
 
+        # Add commit button for committing changes
+        self.commit_button = QPushButton("Commit Changes")
+        self.commit_button.clicked.connect(self.commit_changes)
+        main_layout.addWidget(self.commit_button)
+
         # Create menu bar
         self.menu_bar = MenuBar(self)
         self.setMenuBar(self.menu_bar)
@@ -46,6 +51,9 @@ class MainWindow(QMainWindow):
         self.edit_tree.revert_paragraph.connect(self.revert_paragraph)
 
     def on_text_changed(self):
+        pass  # No automatic update to EditTree on text change
+
+    def commit_changes(self):
         current_text = self.text_editor.toPlainText()
         self.edit_tree.update_tree(current_text)
 

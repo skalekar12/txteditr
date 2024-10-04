@@ -1,6 +1,4 @@
-from PyQt5.QtWidgets import QMenuBar, QFileDialog, QMessageBox, QComboBox
-from PyQt5.QtGui import QColor, QPalette
-from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QMenuBar, QFileDialog, QMessageBox
 
 
 class MenuBar(QMenuBar):
@@ -15,15 +13,15 @@ class MenuBar(QMenuBar):
 
         new_action = file_menu.addAction("New")
         new_action.setShortcut("Ctrl+N")
-        new_action.triggered.connect(self.new_file)
+        new_action.triggered.connect(self.new_file)  # Ensure method exists
 
         open_action = file_menu.addAction("Open")
         open_action.setShortcut("Ctrl+O")
-        open_action.triggered.connect(self.open_file)
+        open_action.triggered.connect(self.open_file)  # Ensure method exists
 
         save_action = file_menu.addAction("Save")
         save_action.setShortcut("Ctrl+S")
-        save_action.triggered.connect(self.save_file)
+        save_action.triggered.connect(self.save_file)  # Ensure method exists
 
         file_menu.addSeparator()
 
@@ -84,29 +82,3 @@ class MenuBar(QMenuBar):
     def apply_theme(self, theme_name):
         """Apply theme to MenuBar and other widgets."""
         self.parent.theme_manager.apply_theme(theme_name)
-
-        theme = self.parent.theme_manager.themes[theme_name]
-
-        # Update MenuBar colors
-        palette = self.palette()
-        palette.setColor(QPalette.Window, QColor(theme["window"]))
-        palette.setColor(QPalette.WindowText, QColor(theme["text"]))
-        palette.setColor(QPalette.Base, QColor(theme["base"]))
-        palette.setColor(QPalette.Button, QColor(theme["button"]))
-        palette.setColor(QPalette.ButtonText, QColor(theme["button_text"]))
-        self.setPalette(palette)
-
-        # Update Font Dropdown
-        self.parent.font_selector.setStyleSheet(
-            f"background-color: {theme['button']}; color: {theme['button_text']};"
-        )
-
-        # Update Size Dropdown
-        self.parent.size_selector.setStyleSheet(
-            f"background-color: {theme['button']}; color: {theme['button_text']};"
-        )
-
-        # Update Edit History Tree
-        self.parent.edit_tree.setStyleSheet(
-            f"background-color: {theme['base']}; color: {theme['text']};"
-        )

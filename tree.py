@@ -15,6 +15,9 @@ class EditTree(QTreeWidget):
         self.customContextMenuRequested.connect(self.show_context_menu)
 
     def update_tree(self, text):
+        """
+        Update the tree only when the "Commit" button is pressed.
+        """
         paragraphs = text.split('\n\n')
         self.clear()
 
@@ -23,6 +26,7 @@ class EditTree(QTreeWidget):
                 if i not in self.paragraph_history:
                     self.paragraph_history[i] = []
 
+                # Save the new paragraph only if it's different from the last saved one
                 if not self.paragraph_history[i] or self.paragraph_history[i][-1] != paragraph:
                     self.paragraph_history[i].append(paragraph)
 
@@ -46,3 +50,24 @@ class EditTree(QTreeWidget):
             if action == revert_action:
                 paragraph_index, text = item.data(0, Qt.UserRole)
                 self.revert_paragraph.emit(paragraph_index, text)
+    def apply_theme(self, theme):
+        """
+        Apply a theme to the EditTree widget.
+        This method will be called by the theme manager when switching themes.
+        """
+        # Set the background and text color of the EditTree based on the provided theme
+        self.setStyleSheet(f"""
+            QTreeWidget {{
+                background-color: {theme['base']};
+                color: {theme['text']};
+            }}
+            QTreeWidget::item {{
+                background-color: {theme['base']};
+                color: {theme['text']};
+            }}
+            QTreeWidget::item:selected {{
+                background-color: {theme['highlight']};
+                color: {theme['highlight_text']};
+            }}
+        """)
+
